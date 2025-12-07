@@ -19,11 +19,19 @@ pub fn print_header(options: &Options) {
         " Mapper path: {}",
         options.get_mapper_path().display()
     ));
+    body.push(format!("  Mount path: {}", options.mount_path.display()));
     body.push(format!(
-        "  Mount path: {}",
-        options.mount_path.display()
+        "    Key path: {}",
+        options
+            .key_path
+            .clone()
+            .map_or(String::new(), |path| path.display().to_string())
     ));
-    eprintln!("{}\n{}\n", title.join("\n").bold(), body.join("\n").dimmed());
+    eprintln!(
+        "{}\n{}\n",
+        title.join("\n").bold(),
+        body.join("\n").dimmed()
+    );
 }
 
 pub fn print_step_start(mut_counter: &Mutex<usize>, message: &str) {

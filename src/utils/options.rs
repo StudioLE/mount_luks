@@ -8,6 +8,7 @@ pub struct Options {
     pub partition_path: PathBuf,
     pub mapper_name: String,
     pub mount_path: PathBuf,
+    pub key_path: Option<PathBuf>,
 }
 
 impl Options {
@@ -23,11 +24,11 @@ impl Options {
         }
         let file = from_path_iter(path).change_context(OptionsError::Read)?;
         let vars: HashMap<String, String> = file.filter_map(Result::ok).collect();
-
         Ok(Options {
             partition_path: PathBuf::from(get_value(&vars, "PARTITION_PATH")?),
             mapper_name: get_value(&vars, "MAPPER_NAME")?,
             mount_path: PathBuf::from(get_value(&vars, "MOUNT_PATH")?),
+            key_path: vars.get("KEY_PATH").map(PathBuf::from),
         })
     }
 
