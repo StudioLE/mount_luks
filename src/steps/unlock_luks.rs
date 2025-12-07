@@ -89,9 +89,7 @@ mod tests {
     fn _read_password() {
         // Arrange
         let options = Options::read_options().expect("Should be able to read options");
-        if options.key_path.is_none() {
-            panic!("Test requires key file");
-        }
+        assert!(options.key_path.is_some(), "Test requires key file");
 
         // Act
         let result = read_password(&options);
@@ -99,13 +97,11 @@ mod tests {
         // Assert
         if is_root().is_ok() {
             assert!(result.is_ok());
-        } else {
-            if let Err(report) = &result {
-                eprintln!("{report:?}");
-                let _error = report
-                    .downcast_ref::<UnlockError>()
-                    .expect("should be UnlockError");
-            }
+        } else if let Err(report) = &result {
+            eprintln!("{report:?}");
+            let _error = report
+                .downcast_ref::<UnlockError>()
+                .expect("should be UnlockError");
         }
     }
 }

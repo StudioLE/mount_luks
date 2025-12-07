@@ -6,5 +6,5 @@ mod steps;
 mod utils;
 
 fn main() {
-    app()
+    app();
 }

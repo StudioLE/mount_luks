@@ -43,8 +43,8 @@ fn get_value(
 ) -> Result<String, Report<OptionsError>> {
     hash_map
         .get(key)
-        .ok_or_else(|| Report::new(OptionsError::Required).attach(format!("Key: {}", key)))
-        .map(|s| s.to_string())
+        .ok_or_else(|| Report::new(OptionsError::Required).attach(format!("Key: {key}")))
+        .cloned()
 }
 
 #[derive(Debug, Error)]

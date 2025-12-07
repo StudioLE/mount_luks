@@ -24,16 +24,13 @@ pub enum IsLuksError {
     Unexpected,
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn _is_luks_partition() {
-        if is_root().is_err() {
-            panic!("Root is required to run this test");
-        }
+        assert!(is_root().is_ok(), "Root is required to run this test");
 
         // Arrange
         let options = Options::read_options().expect("Should be able to read options");
@@ -46,8 +43,5 @@ mod tests {
             eprintln!("{report:?}");
         }
         assert!(result.is_ok());
-
     }
 }
-
-

@@ -16,10 +16,8 @@ mod tests {
 
     #[test]
     fn _is_root() {
-        if is_root().is_err() {
-            panic!("Root is required to run this test");
-        }
-        
+        assert!(is_root().is_ok(), "Root is required to run this test");
+
         // Arrange
         // Act
         let result = is_root();

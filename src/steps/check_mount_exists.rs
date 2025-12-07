@@ -12,7 +12,6 @@ pub fn check_mount_exists(options: &Options) -> Result<(), Report<NoMount>> {
 #[error("Mount point does not exist")]
 pub struct NoMount;
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -21,7 +20,7 @@ mod tests {
     fn _check_mount_exists() {
         // Arrange
         let options = Options::read_options().expect("Should be able to read options");
-        
+
         // Act
         let result = check_mount_exists(&options);
 
@@ -32,4 +31,3 @@ mod tests {
         }
     }
 }
-

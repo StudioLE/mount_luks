@@ -6,27 +6,23 @@ const CHECK: &str = "  ✓ |";
 const CROSS: &str = "  ⨯ |";
 
 pub fn print_header(options: &Options) {
-    let mut title = Vec::new();
-    title.push("╭────────────────────────────────────────────────╮");
-    title.push("│ Unlock and mount a LUKS partition              │");
-    title.push("╰────────────────────────────────────────────────╯");
-    let mut body = Vec::new();
-    body.push(format!(
-        "   Partition: {} ",
-        options.partition_path.display()
-    ));
-    body.push(format!(
-        " Mapper path: {}",
-        options.get_mapper_path().display()
-    ));
-    body.push(format!("  Mount path: {}", options.mount_path.display()));
-    body.push(format!(
-        "    Key path: {}",
-        options
-            .key_path
-            .clone()
-            .map_or(String::new(), |path| path.display().to_string())
-    ));
+    let title = [
+        "╭────────────────────────────────────────────────╮",
+        "│ Unlock and mount a LUKS partition              │",
+        "╰────────────────────────────────────────────────╯",
+    ];
+    let body = [
+        format!("   Partition: {} ", options.partition_path.display()),
+        format!(" Mapper path: {}", options.get_mapper_path().display()),
+        format!("  Mount path: {}", options.mount_path.display()),
+        format!(
+            "    Key path: {}",
+            options
+                .key_path
+                .clone()
+                .map_or(String::new(), |path| path.display().to_string())
+        ),
+    ];
     eprintln!(
         "{}\n{}\n",
         title.join("\n").bold(),

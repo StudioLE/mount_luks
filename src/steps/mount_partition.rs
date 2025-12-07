@@ -34,11 +34,11 @@ mod tests {
         // Assert
         if is_root().is_ok() {
             assert!(result.is_ok());
-        } else {
-            if let Err(report) = &result {
-                eprintln!("{report:?}");
-                let _error = report.downcast_ref::<MountError>().expect("should be MountError");
-            }
+        } else if let Err(report) = &result {
+            eprintln!("{report:?}");
+            let _error = report
+                .downcast_ref::<MountError>()
+                .expect("should be MountError");
         }
     }
 }

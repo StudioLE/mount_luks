@@ -60,9 +60,9 @@ impl From<Output> for Response {
     }
 }
 
-fn to_string(buffer: &Vec<u8>) -> Option<String> {
+fn to_string(buffer: &[u8]) -> Option<String> {
     let mut output = String::from_utf8_lossy(buffer).to_string();
-    output = output.trim().to_string();
+    output.trim().to_owned().clone_into(&mut output);
     if output.is_empty() {
         None
     } else {
