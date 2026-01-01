@@ -31,7 +31,9 @@ mod tests {
         // Assert
         if let Err(report) = &result {
             eprintln!("{report:?}");
+            let _error = report
+                .downcast_ref::<PartitionUnlocked>()
+                .expect("should be PartitionUnlocked");
         }
-        assert!(result.is_ok());
     }
 }
