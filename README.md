@@ -1,12 +1,45 @@
 # `mount_luks`
 
+## Overview
+
 A simple CLI tool to unlock and mount a LUKS encrypted disk.
+
+The passphrase is concatenated from multiple optional sources ensuring the highest level of security:
+
+### TPM (Trusted Platform Module) 2.0
+
+- Hardware integrity check
+- Prevents unlock if bootloader/firmware is tampered with
+- Protects against evil maid attacks and key extraction
+
+### File on removable media (USB)
+
+- Possession factor – something you have
+- Prevents unlock without physical access to the USB
+- Protects against remote attacks and theft (if USB stored separately)
+- Kept physically secure when not required
+
+### Interactive PIN or password
+
+- Knowledge factor – something you know
+- Prevents unlock by unauthorized users with physical access
+- Protects against simple theft (even if they have your laptop + USB)
+
+### Combined defense:
+
+- Thief steals laptop only → blocked by USB and PIN
+- Thief steals laptop and USB → blocked by PIN
+- Attacker tampers with bootloader → blocked by TPM
+- Someone finds your USB → blocked by needing laptop and PIN
+- Remote/software attack → blocked by all three
 
 ## Getting Started
 
-### Prerequisites
+### Requirements
 
-It is assumed you have already created a LUKS encrypted disk.
+- It is assumed you have already created a LUKS encrypted disk.
+- [tpm2-tools](https://tpm2-tools.readthedocs.io/en/latest/)
+- Root access
 
 ### Install
 
@@ -14,7 +47,7 @@ Download the latest binary from [GitHub Releases](https://github.com/StudioLE/mo
 
 ### Create an options file
 
-Create an options file a `.yaml` or `.yml` extension in `/root/.config/mount_luks/` structured as follows:
+Create an options file with a `.yaml` or `.yml` extension in `/root/.config/mount_luks/` structured as follows:
 
 ```yaml
 # Path of the LUKS partition
@@ -35,28 +68,61 @@ tpm_handle: 0x81000000
 key_prompt: false
 ```
 
-Check which persistent handles are already in use:
+The `tpm_handle` must be unique and is ideally sequentially, so check which persistent handles are already in use:
 
 ```shell
 sudo tpm2_getcap handles-persistent
 ```
 
-### Set the TPM component of the key
+### Save the file component of the key
+
+Generate a random key using your preferred method and save it to the `key_path` file.
 
 ```shell
-mount_luks set-tpm
+tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 128 | sudo tee /root/.config/mount_luks/.key > /dev/null
 ```
 
-### Set the LUKS key
+### Save the TPM component of the key
 
-You will need to enter an existing LUKS passphrase.
+Generate a random key using your preferred method.
 
 ```shell
-mount_luks set-luks
+tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 128
+```
+
+Copy the key to the clipboard.
+
+Run the `set-tpm` sub command and paste the key when prompted.
+
+```shell
+sudo mount_luks set-tpm
+```
+
+### Save the concatenated key to LUKS
+
+LUKS has multiple keyslots so your existing passphrase will not be replaced or overwritten.
+
+To check the existing key slots:
+
+```shell
+sudo cryptsetup luksDump /dev/nvme0n1p9
+```
+
+Once you've saved the new key with `mount_luks` you should **NOT** remove your existing passphrase as it will be needed to
+update the TPM data if your secure boot configuration changes.
+
+Run the `set-luks` sub command to save the concatenated key to LUKS.
+
+Enter your **existing** LUKS passphrase when prompted.
+
+```shell
+sudo mount_luks set-luks
 ```
 
 ### Unlock and mount the LUKS partition
 
+You can now unlock and mount the LUKS partition using the `mount_luks` command:
+
 ```shell
-mount_luks
+sudo mount_luks
 ```
