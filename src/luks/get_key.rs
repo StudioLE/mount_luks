@@ -12,7 +12,9 @@ pub fn get_key(options: &Options) -> Result<String, Report<KeyError>> {
         debug!("Reading key from file: {}", path.display());
         let key = read_to_string(path)
             .change_context(KeyError::KeyFile)
-            .attach_path(path)?;
+            .attach_path(path)?
+            .trim()
+            .to_owned();
         if key.is_empty() {
             warn!("Key file is empty");
         }
@@ -31,7 +33,9 @@ pub fn get_key(options: &Options) -> Result<String, Report<KeyError>> {
     if options.key_prompt == Some(true) {
         debug!("Reading key from prompt");
         let key = prompt_password("Enter interactive key component: ")
-            .change_context(KeyError::Prompt)?;
+            .change_context(KeyError::Prompt)?
+            .trim()
+            .to_owned();
         if key.is_empty() {
             warn!("Prompt value is empty");
         }
