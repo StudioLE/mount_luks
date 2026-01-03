@@ -1,5 +1,7 @@
 use crate::prelude::*;
+use std::fmt::Debug;
 
+#[derive(Clone)]
 pub struct AnyReport {
     debug: String,
 }
@@ -14,8 +16,15 @@ impl<T: std::error::Error> From<Report<T>> for AnyReport {
 }
 
 #[allow(clippy::absolute_paths)]
+impl Debug for AnyReport {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.debug)
+    }
+}
+
+#[allow(clippy::absolute_paths)]
 impl Display for AnyReport {
-    fn fmt(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(formatter, "{}", self.debug)
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.debug)
     }
 }

@@ -29,6 +29,8 @@ pub struct Options {
     pub tpm_handle: Option<PersistentHandle>,
     /// Optional should an interactive key be required?
     pub key_prompt: Option<bool>,
+    /// Hide the UI header
+    pub no_header: Option<bool>,
 }
 
 impl Options {

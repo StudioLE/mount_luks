@@ -1,5 +1,6 @@
-use mount_luks::prelude::cli;
+use mount_luks::prelude::*;
+use std::process::ExitCode;
 
-fn main() {
-    cli();
+fn main() -> ExitCode {
+    cli()
 }

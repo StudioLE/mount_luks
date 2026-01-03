@@ -1,9 +1,6 @@
 use crate::prelude::*;
 
-pub fn set_luks_command() -> Result<(), AnyReport> {
-    let options = Options::read_options()?;
-
-    print_header(&options);
+pub fn set_luks_command(options: Options) -> Result<(), AnyReport> {
     let counter = Mutex::new(0);
     let total_steps = 4;
 
